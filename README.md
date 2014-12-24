@@ -3,6 +3,8 @@ NexturnController
 
 Nexturn(BLE device) control from iOS.
 
+[Article Link](http://qiita.com/kentya6/items/53b432984e96b53f1000)
+
 ## Features
 - [x] Red / Green / Blue / White Control (1 Channel)
 - [x] Random Color (RGBW) Control (4 Channel)
