@@ -35,10 +35,10 @@ class NexturnObject: NSObject, CBPeripheralDelegate {
         
         // LEDデータを作成
         func createLedData(hexData: UInt32) -> NSData {
-            var red   = Byte((hexData & 0xFF000000) >> 24)
-            var green = Byte((hexData & 0x00FF0000) >> 16)
-            var blue  = Byte((hexData & 0x0000FF00) >> 8)
-            var white = Byte(hexData & 0x000000FF)
+            let red   = Byte((hexData & 0xFF000000) >> 24)
+            let green = Byte((hexData & 0x00FF0000) >> 16)
+            let blue  = Byte((hexData & 0x0000FF00) >> 8)
+            let white = Byte(hexData & 0x000000FF)
             var data  = [red, green, blue, white]
             
             return NSData(bytes: &data, length: 4)
