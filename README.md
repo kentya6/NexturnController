@@ -1,6 +1,15 @@
 NexturnController
 =================
 
+[![Platform](http://img.shields.io/badge/platform-ios-blue.svg?style=flat
+)](https://developer.apple.com/iphone/index.action)
+[![Language](http://img.shields.io/badge/language-swift-brightgreen.svg?style=flat
+)](https://developer.apple.com/swift)
+[![License](http://img.shields.io/badge/license-MIT-lightgrey.svg?style=flat
+)](http://mit-license.org)
+[![Issues](https://img.shields.io/github/issues/kentya6/NexturnController.svg?style=flat
+)](https://github.com/kentya6/NexturnController/issues?state=open)
+
 Nexturn(BLE device) control from iOS.
 
 [Article Link](http://qiita.com/kentya6/items/53b432984e96b53f1000)
