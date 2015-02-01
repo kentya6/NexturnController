@@ -31,26 +31,30 @@ class CentralManager: CBCentralManager, CBCentralManagerDelegate {
     
     // ペリフェラル発見時に呼ばれる
     func centralManager(central: CBCentralManager!, didDiscoverPeripheral peripheral: CBPeripheral!, advertisementData: [NSObject : AnyObject]!, RSSI: NSNumber!) {
-        switch peripheral.name {
-        case NexturnObject.Property.kName!:
-            let nexturnObject = NexturnObject()
-            peripheral.delegate = nexturnObject
-            nexturnObject.peripheral = peripheral
-            connectPeripheral(nexturnObject.peripheral, options: nil)
-            nexturnObjectArray.append(nexturnObject)
-        default:
-            break
+        if let name = peripheral.name {
+            switch peripheral.name {
+            case NexturnObject.Property.kName!:
+                let nexturnObject = NexturnObject()
+                peripheral.delegate = nexturnObject
+                nexturnObject.peripheral = peripheral
+                connectPeripheral(nexturnObject.peripheral, options: nil)
+                nexturnObjectArray.append(nexturnObject)
+            default:
+                break
+            }
         }
     }
     
     // ペリフェラルと接続後に呼ばれる
     func centralManager(central: CBCentralManager!, didConnectPeripheral peripheral: CBPeripheral!) {
-        switch peripheral.name {
-        case NexturnObject.Property.kName!:
-            let UUID = CBUUID(string: NexturnObject.Property.kLEDServiceUUID)
-            nexturnObjectArray.last?.peripheral?.discoverServices([UUID])
-        default:
-            break
+        if let name = peripheral.name {
+            switch peripheral.name {
+            case NexturnObject.Property.kName!:
+                let UUID = CBUUID(string: NexturnObject.Property.kLEDServiceUUID)
+                nexturnObjectArray.last?.peripheral?.discoverServices([UUID])
+            default:
+                break
+            }
         }
     }
     
