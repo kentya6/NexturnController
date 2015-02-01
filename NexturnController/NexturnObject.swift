@@ -12,8 +12,11 @@ import CoreBluetooth
 class NexturnObject: NSObject, CBPeripheralDelegate {
     // MARK: - Please Replace This UUID to Your's Nexturn UUID
     let kNexturnUUID = "F71FCA69-78A5-B654-9667-F27BF8E5CAC9"
-    let kNexturnName = "Nexturn"
-    let kNexturnLEDServiceUUID = "FFE0"
+    enum Property {
+        static var kName: String! = "Nexturn"
+        static var kLEDServiceUUID: String! = "FFE0"
+    }
+
     var peripheral: CBPeripheral?
     private var characteristicArray = [CBCharacteristic]()
     
