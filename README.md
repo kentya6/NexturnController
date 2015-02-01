@@ -18,10 +18,11 @@ Nexturn(BLE device) control from iOS.
 - [x] Red / Green / Blue / White Control (1 Channel)
 - [x] Random Color (RGBW) Control (4 Channel)
 - [x] Color Off Control (4 Channel)
+- [x] Multiple Nexturn devices
 
 ## Demo
 <p align="center" >
-<img src="http://kentya6.github.io/NexturnController/images/demo.gif" width="568" height="320"/>
+<img src="https://raw.githubusercontent.com/kentya6/NexturnController/gh-pages/images/demo.gif" width="568" height="320"/>
 </p>
 
 ## Requirement
@@ -32,7 +33,7 @@ Nexturn(BLE device) control from iOS.
 1. Power on your iOS device's Bluetooth. (Require Bluetooth4.0+)
 2. Power on your Nexturn device.
 3. Launch This App.
-4. This App will connect your Nexturn device automatically. (Please change NexturnObject's UUID to your's Nexturn UUID.)
+4. This App will connect your Nexturn device automatically. 
 5. Enjoy Nexturn control life :D.
 
 ## Licence
