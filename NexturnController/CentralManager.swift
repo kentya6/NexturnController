@@ -10,7 +10,7 @@ import Foundation
 import CoreBluetooth
 
 class CentralManager: CBCentralManager, CBCentralManagerDelegate {
-    private var nexturnObject = NexturnObject()
+    private var nexturnObjectArray = [NexturnObject]()
     
     override init(delegate: CBCentralManagerDelegate!, queue: dispatch_queue_t!, options: [NSObject : AnyObject]!) {
         super.init(delegate: delegate, queue: queue, options: options)
@@ -32,10 +32,12 @@ class CentralManager: CBCentralManager, CBCentralManagerDelegate {
     // ペリフェラル発見時に呼ばれる
     func centralManager(central: CBCentralManager!, didDiscoverPeripheral peripheral: CBPeripheral!, advertisementData: [NSObject : AnyObject]!, RSSI: NSNumber!) {
         switch peripheral.name {
-        case nexturnObject.kNexturnName:
+        case NexturnObject.Property.kName!:
+            let nexturnObject = NexturnObject()
             peripheral.delegate = nexturnObject
             nexturnObject.peripheral = peripheral
             connectPeripheral(nexturnObject.peripheral, options: nil)
+            nexturnObjectArray.append(nexturnObject)
         default:
             break
         }
@@ -44,10 +46,9 @@ class CentralManager: CBCentralManager, CBCentralManagerDelegate {
     // ペリフェラルと接続後に呼ばれる
     func centralManager(central: CBCentralManager!, didConnectPeripheral peripheral: CBPeripheral!) {
         switch peripheral.name {
-        case nexturnObject.kNexturnName:
-            let UUID = CBUUID(string: nexturnObject.kNexturnLEDServiceUUID)
-            nexturnObject.peripheral?.discoverServices([UUID])
-            stopScan()
+        case NexturnObject.Property.kName!:
+            let UUID = CBUUID(string: NexturnObject.Property.kLEDServiceUUID)
+            nexturnObjectArray.last?.peripheral?.discoverServices([UUID])
         default:
             break
         }
@@ -56,6 +57,8 @@ class CentralManager: CBCentralManager, CBCentralManagerDelegate {
     // MARK: - Call from IBAction
     // 押されたボタンに対応したデータを渡す
     func ledButtonTapped(tag: NSInteger) {
-        nexturnObject.ledButtonTapped(tag)
+        for nexturnObject in nexturnObjectArray {
+            nexturnObject.ledButtonTapped(tag)
+        }
     }
 }
