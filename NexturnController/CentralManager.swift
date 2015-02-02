@@ -32,7 +32,7 @@ class CentralManager: CBCentralManager, CBCentralManagerDelegate {
     // ペリフェラル発見時に呼ばれる
     func centralManager(central: CBCentralManager!, didDiscoverPeripheral peripheral: CBPeripheral!, advertisementData: [NSObject : AnyObject]!, RSSI: NSNumber!) {
         if let name = peripheral.name {
-            switch peripheral.name {
+            switch name {
             case NexturnObject.Property.kName!:
                 let nexturnObject = NexturnObject()
                 peripheral.delegate = nexturnObject
@@ -48,7 +48,7 @@ class CentralManager: CBCentralManager, CBCentralManagerDelegate {
     // ペリフェラルと接続後に呼ばれる
     func centralManager(central: CBCentralManager!, didConnectPeripheral peripheral: CBPeripheral!) {
         if let name = peripheral.name {
-            switch peripheral.name {
+            switch name {
             case NexturnObject.Property.kName!:
                 let UUID = CBUUID(string: NexturnObject.Property.kLEDServiceUUID)
                 nexturnObjectArray.last?.peripheral?.discoverServices([UUID])
