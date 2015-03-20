@@ -105,7 +105,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0610;
-				ORGANIZATIONNAME = "Yokoyama Kengo";
+				ORGANIZATIONNAME = "Kengo Yokoyama";
 				TargetAttributes = {
 					BE310A011A4909F200384D5A = {
 						CreatedOnToolsVersion = 6.1.1;

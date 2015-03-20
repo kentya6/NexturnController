@@ -2,8 +2,8 @@
 //  ViewController.swift
 //  NexturnController
 //
-//  Created by Y.K on 2014/12/24.
-//  Copyright (c) 2014年 Yokoyama Kengo. All rights reserved.
+//  Created by Kengo Yokoyama on 2014/12/24.
+//  Copyright (c) 2014年 Kengo Yokoyama. All rights reserved.
 //
 
 import UIKit
