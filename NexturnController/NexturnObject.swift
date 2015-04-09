@@ -36,10 +36,10 @@ class NexturnObject: NSObject, CBPeripheralDelegate {
         
         // LEDデータを作成
         func createLedData(hexData: UInt32) -> NSData {
-            let red   = Byte((hexData & 0xFF000000) >> 24)
-            let green = Byte((hexData & 0x00FF0000) >> 16)
-            let blue  = Byte((hexData & 0x0000FF00) >> 8)
-            let white = Byte(hexData & 0x000000FF)
+            let red   = UInt8((hexData & 0xFF000000) >> 24)
+            let green = UInt8((hexData & 0x00FF0000) >> 16)
+            let blue  = UInt8((hexData & 0x0000FF00) >> 8)
+            let white = UInt8(hexData & 0x000000FF)
             var data  = [red, green, blue, white]
             
             return NSData(bytes: &data, length: 4)
@@ -47,7 +47,7 @@ class NexturnObject: NSObject, CBPeripheralDelegate {
         
         // LEDデータを作成
         func createLedData(hexData: UInt8) -> NSData {
-            var data = Byte(hexData)
+            var data = UInt8(hexData)
             
             return NSData(bytes: &data, length: 1)
         }
@@ -69,14 +69,14 @@ class NexturnObject: NSObject, CBPeripheralDelegate {
     // Service発見時に呼ばれる
     func peripheral(peripheral: CBPeripheral!, didDiscoverServices error: NSError!) {
         for service in peripheral.services {
-            self.peripheral?.discoverCharacteristics(nil, forService: service as CBService)
+            self.peripheral?.discoverCharacteristics(nil, forService: service as! CBService)
         }
     }
     
     // Characteristic発見時に呼ばれる
     func peripheral(peripheral: CBPeripheral!, didDiscoverCharacteristicsForService service: CBService!, error: NSError!) {
         for characteristic in service.characteristics {
-            self.characteristicArray.append(characteristic as CBCharacteristic)
+            self.characteristicArray.append(characteristic as! CBCharacteristic)
         }
     }
 }
