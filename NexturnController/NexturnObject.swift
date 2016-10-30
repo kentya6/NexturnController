@@ -9,74 +9,77 @@
 import Foundation
 import CoreBluetooth
 
-class NexturnObject: NSObject, CBPeripheralDelegate {
+class NexturnObject: NSObject {
+    
     enum Property {
-        static var kName: String! = "Nexturn"
-        static var kLEDServiceUUID: String! = "FFE0"
+        static let kName = "Nexturn"
+        static let kLEDServiceUUID = "FFE0"
     }
 
     var peripheral: CBPeripheral?
-    private var characteristicArray = [CBCharacteristic]()
+    fileprivate var characteristicArray = [CBCharacteristic]()
     
-    private enum ledButtonTag: Int {
-        case Red, Green, Blue, White, Random, Off
+    fileprivate enum ledButtonTag: Int {
+        case red, green, blue, white, random, off
 
-        private var type: NSData {
+        fileprivate var type: Data {
             get {
                 switch self {
-                case .Red, .Green, .Blue, .White:
-                    return createLedData(UInt8(arc4random_uniform(255)))
-                case .Random:
+                case .red, .green, .blue, .white:
+                    return createLedData(UInt8(arc4random_uniform(UInt32(UInt8.max))))
+                case .random:
                     return createLedData(arc4random_uniform(UInt32.max))
-                case .Off:
+                case .off:
                     return createLedData(UInt32(0))
                 }
             }
         }
         
-        // LEDデータを作成
-        func createLedData(hexData: UInt32) -> NSData {
+        func createLedData(_ hexData: UInt32) -> Data {
             let red   = UInt8((hexData & 0xFF000000) >> 24)
             let green = UInt8((hexData & 0x00FF0000) >> 16)
-            let blue  = UInt8((hexData & 0x0000FF00) >> 8)
-            let white = UInt8(hexData & 0x000000FF)
-            var data  = [red, green, blue, white]
-            
-            return NSData(bytes: &data, length: 4)
+            let blue  = UInt8((hexData & 0x0000FF00) >>  8)
+            let white = UInt8( hexData & 0x000000FF)
+            let data  = [red, green, blue, white]
+        
+            return Data(data)
         }
         
-        // LEDデータを作成
-        func createLedData(hexData: UInt8) -> NSData {
-            var data = UInt8(hexData)
+        func createLedData(_ hexData: UInt8) -> Data {
+            let data = UInt8(hexData)
             
-            return NSData(bytes: &data, length: 1)
+            return Data([data])
         }
     }
     
-    // 押されたボタンに対応したデータをNexturnに送信
-    func ledButtonTapped(tag: NSInteger) {
-        let buttonTag = ledButtonTag(rawValue: tag)!
+    func ledButtonTapped(_ tag: NSInteger) {
+        guard let buttonTag = ledButtonTag(rawValue: tag) else {
+            return
+        }
+        
+        if characteristicArray.count <= tag {
+            return
+        }
         
         switch buttonTag {
-        case .Red, .Green, .Blue, .White:
-            self.peripheral?.writeValue(buttonTag.type, forCharacteristic: characteristicArray[tag], type: .WithResponse)
-        case .Random, .Off:
-            self.peripheral?.writeValue(buttonTag.type, forCharacteristic: characteristicArray[4], type: .WithResponse)
+        case .red, .green, .blue, .white:
+            peripheral?.writeValue(buttonTag.type, for: characteristicArray[tag], type: .withResponse)
+        case .random, .off:
+            peripheral?.writeValue(buttonTag.type, for: characteristicArray[4], type: .withResponse)
+        }
+    }
+}
+
+extension NexturnObject: CBPeripheralDelegate {
+    func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
+        peripheral.services?.forEach {
+            peripheral.discoverCharacteristics(nil, for: $0)
         }
     }
     
-    // MARK: - CBPeripheralDelegate
-    // Service発見時に呼ばれる
-    func peripheral(peripheral: CBPeripheral!, didDiscoverServices error: NSError!) {
-        for service in peripheral.services {
-            self.peripheral?.discoverCharacteristics(nil, forService: service as! CBService)
-        }
-    }
-    
-    // Characteristic発見時に呼ばれる
-    func peripheral(peripheral: CBPeripheral!, didDiscoverCharacteristicsForService service: CBService!, error: NSError!) {
-        for characteristic in service.characteristics {
-            self.characteristicArray.append(characteristic as! CBCharacteristic)
+    func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
+        service.characteristics?.forEach {
+            characteristicArray.append($0)
         }
     }
 }

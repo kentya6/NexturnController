@@ -9,60 +9,62 @@
 import Foundation
 import CoreBluetooth
 
-class CentralManager: CBCentralManager, CBCentralManagerDelegate {
-    private var nexturnObjectArray = [NexturnObject]()
+class CentralManager: CBCentralManager {
     
-    override init(delegate: CBCentralManagerDelegate!, queue: dispatch_queue_t!, options: [NSObject : AnyObject]!) {
+    fileprivate var nexturnObjectArray = [NexturnObject]()
+    
+    override init(delegate: CBCentralManagerDelegate?, queue: DispatchQueue?, options: [String : Any]? = nil) {
         super.init(delegate: delegate, queue: queue, options: options)
         self.delegate = self
     }
     
-    // MARK: - CBCentralManager Delegate Method
-    // CBCentralManagerのステータス更新後に呼ばれる
-    func centralManagerDidUpdateState(central: CBCentralManager!) {
+    // MARK: - Call from IBAction
+    func ledButtonTapped(_ tag: NSInteger) {
+        for nexturnObject in nexturnObjectArray {
+            nexturnObject.ledButtonTapped(tag)
+        }
+    }
+}
+
+extension CentralManager: CBCentralManagerDelegate {
+    func centralManagerDidUpdateState(_ central: CBCentralManager) {
         switch central.state {
-        case .PoweredOn:
+        case .poweredOn:
             let options = ["CBCentralManagerScanOptionAllowDuplicatesKey" : true]
-            scanForPeripheralsWithServices(nil, options: options)
+            scanForPeripherals(withServices: nil, options: options)
         default:
             break
         }
     }
     
-    // ペリフェラル発見時に呼ばれる
-    func centralManager(central: CBCentralManager!, didDiscoverPeripheral peripheral: CBPeripheral!, advertisementData: [NSObject : AnyObject]!, RSSI: NSNumber!) {
-        if let name = peripheral.name {
-            switch name {
-            case NexturnObject.Property.kName!:
-                let nexturnObject = NexturnObject()
-                peripheral.delegate = nexturnObject
-                nexturnObject.peripheral = peripheral
-                connectPeripheral(nexturnObject.peripheral, options: nil)
-                nexturnObjectArray.append(nexturnObject)
-            default:
-                break
-            }
+    func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
+        guard let name = peripheral.name else {
+            return
+        }
+        
+        switch name {
+        case NexturnObject.Property.kName:
+            let nexturnObject = NexturnObject()
+            peripheral.delegate = nexturnObject
+            nexturnObject.peripheral = peripheral
+            connect(nexturnObject.peripheral!, options: nil)
+            nexturnObjectArray.append(nexturnObject)
+        default:
+            break
         }
     }
     
-    // ペリフェラルと接続後に呼ばれる
-    func centralManager(central: CBCentralManager!, didConnectPeripheral peripheral: CBPeripheral!) {
-        if let name = peripheral.name {
-            switch name {
-            case NexturnObject.Property.kName!:
-                let UUID = CBUUID(string: NexturnObject.Property.kLEDServiceUUID)
-                nexturnObjectArray.last?.peripheral?.discoverServices([UUID])
-            default:
-                break
-            }
+    func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
+        guard let name = peripheral.name else {
+            return
         }
-    }
-    
-    // MARK: - Call from IBAction
-    // 押されたボタンに対応したデータを渡す
-    func ledButtonTapped(tag: NSInteger) {
-        for nexturnObject in nexturnObjectArray {
-            nexturnObject.ledButtonTapped(tag)
+        
+        switch name {
+        case NexturnObject.Property.kName:
+            let UUID = CBUUID(string: NexturnObject.Property.kLEDServiceUUID)
+            nexturnObjectArray.last?.peripheral?.discoverServices([UUID])
+        default:
+            break
         }
     }
 }

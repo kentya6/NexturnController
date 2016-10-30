@@ -26,7 +26,7 @@ Nexturn(BLE device) control from iOS.
 </p>
 
 ## Requirement
-* iOS7.0+
+* iOS8.0+
 * Xcode6.0.1+
 
 ## Usage
@@ -39,7 +39,7 @@ Nexturn(BLE device) control from iOS.
 ## Licence
 The MIT License (MIT)
 
-Copyright (c) 2014 Kengo YOKOYAMA
+Copyright (c) 2016 Kengo YOKOYAMA
 
 ## Author
 [kentya6](https://github.com/kentya6)

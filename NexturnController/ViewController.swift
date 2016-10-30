@@ -9,22 +9,24 @@
 import UIKit
 
 class ViewController: UIViewController {
-    @IBOutlet private weak var redButton: UIButton!
-    @IBOutlet private weak var greenButton: UIButton!
-    @IBOutlet private weak var blueButton: UIButton!
-    @IBOutlet private weak var whiteButton: UIButton!
-    @IBOutlet private weak var randomButton: UIButton!
-    @IBOutlet private weak var offButton: UIButton!
-    var centralManager = CentralManager.alloc()
+    
+    @IBOutlet fileprivate weak var redButton: UIButton!
+    @IBOutlet fileprivate weak var greenButton: UIButton!
+    @IBOutlet fileprivate weak var blueButton: UIButton!
+    @IBOutlet fileprivate weak var whiteButton: UIButton!
+    @IBOutlet fileprivate weak var randomButton: UIButton!
+    @IBOutlet fileprivate weak var offButton: UIButton!
+    
+    var centralManager = CentralManager()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
+        
+        let queue = DispatchQueue.global(qos: .default)
         centralManager = CentralManager(delegate: self.centralManager, queue: queue, options: nil)
     }
 
-    // 押されたボタンに対応したデータを渡す
-    @IBAction func ledButtonTapped(sender: AnyObject) {
+    @IBAction func ledButtonTapped(_ sender: AnyObject) {
         centralManager.ledButtonTapped(sender.tag)
     }
 }
